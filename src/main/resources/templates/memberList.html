@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Member List</title>
+</head>
+<body>
+
+<h1>회원 목록</h1>
+
+
+<table>
+    <thead>
+        <tr>
+            <td>번호</td>
+            <td>이메일</td>
+            <td>이름</td>
+        </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="list : ${list}">
+        <td th:text="${list.getId()}">번호</td>
+        <td><a th:text="${list.getEmail()}" th:href="@{/member/view(id=${list.id})}">이메일</a> </td>
+        <td th:text="${list.getName()}">이름</td>
+    </tr>
+    </tbody>
+</table>
+
+
+</body>
+</html>

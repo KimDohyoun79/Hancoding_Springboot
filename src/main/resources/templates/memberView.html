@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Member View</title>
+</head>
+<body>
+
+<h1>회원 상세</h1>
+
+
+    이메일 : <p th:text="${view.email}">이메일</p>
+    비밀번호 :  <p th:text="${view.password}">비밀번호</p>
+    이름 :  <p th:text="${view.name}">이름</p>
+    <a th:href="@{/member/delete(id = ${view.id}) }">글 삭제</a>
+    <a th:href="@{/member/modify/{id}(id = ${view.id}) }">글 수정</a>
+
+
+</body>
+</html>
