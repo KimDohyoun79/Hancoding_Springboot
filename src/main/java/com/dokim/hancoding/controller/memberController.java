@@ -4,6 +4,10 @@ package com.dokim.hancoding.controller;
 import com.dokim.hancoding.entity.MemberEntity;
 import com.dokim.hancoding.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +21,8 @@ public class memberController {
         return "home";
     }
 
+
+    // 8. 글 작성 처리
     @GetMapping("/member/save")
     public String memberSave(){
         return "memberSave";
@@ -25,7 +31,6 @@ public class memberController {
 
     @Autowired
     private MemberService memberService;
-
     @PostMapping("/member/save2")
     public String memberSave2(MemberEntity memberEntity){
         System.out.println("memberEntity = " + memberEntity.toString());
@@ -33,25 +38,32 @@ public class memberController {
         return "redirect:/";
     }
 
-    @GetMapping("/member/list")
-    public String memberList(Model model){
-        model.addAttribute("list", memberService.memberList());
-        return "memberList";
-    }
+
+    // 9. 게시글 리스트
+//    @GetMapping("/member/list")
+//    public String memberList(Model model){
+//        model.addAttribute("list", memberService.memberList());
+//        return "memberList";
+//    }
 
 
+    // 10. 게시글 상세 페이지
     @GetMapping("/member/view")
     public String memberView(Integer id, Model model){
         model.addAttribute("view", memberService.findId(id));
         return "memberView";
     }
 
+
+    // 11. 게시글 삭제
     @GetMapping("/member/delete")
     public String memberDelete(Integer id){
         memberService.del(id);
         return "redirect:/member/list";
     }
 
+
+    // 12. 게시글 수정
     @GetMapping("/member/modify/{id}")
     public String memberModify(@PathVariable("id") Integer id, Model model){
         model.addAttribute("member", memberService.findId(id));
@@ -72,4 +84,22 @@ public class memberController {
         return "redirect:/member/list";
     }
 
+
+    // 14. 페이징 처리
+    @GetMapping("/member/list")
+    public String memberList(Model model,@PageableDefault(page = 0, size = 10,sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+
+        Page<MemberEntity> list = memberService.memberList(pageable);
+
+        int nowPage = list.getPageable().getPageNumber() + 1; //= pageable.getPageNumber();
+        int startPage = Math.max(nowPage -4, 1);
+        int endPage = Math.min(nowPage + 5, list.getTotalPages());
+
+        model.addAttribute("list", list);
+        model.addAttribute("nowPage", nowPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        return "memberList";
+    }
 }
